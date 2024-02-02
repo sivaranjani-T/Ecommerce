@@ -1,12 +1,13 @@
 package com.example.demo.DTO;
 
-public interface userDTO {
+public interface UserOrderDTO {
+
+        Integer getUserId();
+        String getUserName();
+        String getUserEmail();
+        String getUserMobileNumber();
 
 
-    Integer getUserId();
-    String getUserName();
-    String getUserEmail();
-    String getUserMobileNumber();
 
 
 

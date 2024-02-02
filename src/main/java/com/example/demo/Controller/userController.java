@@ -1,9 +1,8 @@
 package com.example.demo.Controller;
 
 
-import com.example.demo.DTO.UserDto;
-import com.example.demo.Service.User.LoginResponse;
-import com.example.demo.Service.User.UserService;
+import com.example.demo.DTO.*;
+import com.example.demo.Service.UserService;
 import com.example.demo.Model.login;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +25,19 @@ public class userController {
     }
     @RequestMapping(value="confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<?> confirmUserAccount(@RequestParam("token")String confirmationToken) {
-       System.out.println("Confirmation");
         return userService.confirmEmail(confirmationToken);
+    }
+    @PostMapping("refreshToken")
+    public ResponseEntity<LoginResponse> refresh(@RequestBody RefreshTokenDTO refreshTokenDTO){
+    return ResponseEntity.ok(userService.refreshToken(refreshTokenDTO));
+    }
+    @PostMapping("forgetPassword")
+    public Object forget(@RequestBody ForgetPasswordDTO forgetPasswordDTO){
+       return  userService.forgotPassword(forgetPasswordDTO);
+    }
+    @PostMapping("resetPassword")
+    public Object reset(@RequestBody ResetPasswordDTO resetPasswordDTO){
+        return  userService.resetPassword(resetPasswordDTO);
     }
 
 

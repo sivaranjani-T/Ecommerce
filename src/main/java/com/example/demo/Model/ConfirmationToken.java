@@ -1,62 +1,55 @@
 package com.example.demo.Model;
 
-import com.example.demo.DTO.UserDto;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
+import jakarta.persistence.*;
+
+import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+
+import java.security.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
 @Data
-
+@EntityListeners(AuditingEntityListener.class)
 public class ConfirmationToken {
 
   public ConfirmationToken(){}
-    public ConfirmationToken(UserDto userDto) {
+    public ConfirmationToken(UserDetail userDetail) {
 
-        createdDate = new Date();
+        createdDate = calculateExpiryDate(60*24);
         confirmationToken = UUID.randomUUID().toString();
+        user=userDetail;
 
     }
 
-    public Long getTokenId() {
-        return tokenId;
-    }
+    private Date calculateExpiryDate(int expiryTimeInMinutes) {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MINUTE, expiryTimeInMinutes);
+            return cal.getTime();
 
-    public void setTokenId(Long tokenId) {
-        this.tokenId = tokenId;
-    }
-
-    public String getConfirmationToken() {
-        return confirmationToken;
-    }
-
-    public void setConfirmationToken(String confirmationToken) {
-        this.confirmationToken = confirmationToken;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="token_id")
+
     private Long tokenId;
-
-    @Column(name="confirmation_token")
     private String confirmationToken;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
+    @OneToOne
+    private UserDetail user;
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    private Date createdAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
+    private Date modifiedAt;
 
 
 }

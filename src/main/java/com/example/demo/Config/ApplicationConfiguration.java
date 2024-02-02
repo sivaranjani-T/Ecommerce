@@ -22,8 +22,7 @@ import org.springframework.stereotype.Service;
 public class ApplicationConfiguration {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private  jwtService JwtService;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByUserEmail(username)
@@ -32,10 +31,10 @@ public class ApplicationConfiguration {
     }
     @Bean
     public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authprovider=new DaoAuthenticationProvider();
-        authprovider.setUserDetailsService(userDetailsService());
-        authprovider.setPasswordEncoder(passwordEncoder());
-        return authprovider;
+        DaoAuthenticationProvider authProvider=new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

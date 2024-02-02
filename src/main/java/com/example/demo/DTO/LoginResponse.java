@@ -1,4 +1,4 @@
-package com.example.demo.Service.User;
+package com.example.demo.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,4 +12,5 @@ import lombok.RequiredArgsConstructor;
 @Builder
 public class LoginResponse {
     private String token;
+    private String refreshToken;
 }

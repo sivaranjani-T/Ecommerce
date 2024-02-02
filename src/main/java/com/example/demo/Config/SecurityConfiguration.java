@@ -1,5 +1,6 @@
 package com.example.demo.Config;
 
+import com.example.demo.Model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,26 +17,30 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-    @Autowired
-    private  jwtAuthenticationFilter jwtAuthFilter;
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
+
+    private final jwtAuthenticationFilter jwtAuthFilter;
+
+    private final AuthenticationProvider authenticationProvider;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-      http.csrf(AbstractHttpConfigurer::disable)
-              .authorizeHttpRequests(auth -> {
-                          auth.requestMatchers("api/save", "api/login","api/save/product",
-                                  "api/confirm-account","http://localhost:","api/addCategory","api/mainCategory","api/subCategory/**").permitAll();
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> {
 
-                          auth.anyRequest().authenticated();
-                      }
-              )
-              .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-              .authenticationProvider(authenticationProvider)
-              .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                            auth.requestMatchers("api/login", "api/display", "api/subCategory/", "api/mainCategory", "api/refreshToken"
+                            ,"api/forgetPassword","api/resetPassword").permitAll();
+                            auth.requestMatchers("api/save/product", "api/addCategory",
+                                    "api/subCategory/**", "http://localhost:8080/api/addCategory").hasAnyAuthority(Role.ADMIN.name());
+                            auth.requestMatchers("api/save", "api/confirm-account").hasAnyAuthority(Role.USER.name());
+
+                            auth.anyRequest().authenticated();
+
+                        }
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
-
     }
-
-
 }

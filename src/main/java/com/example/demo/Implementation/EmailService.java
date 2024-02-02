@@ -1,4 +1,4 @@
-package com.example.demo.Service.Email;
+package com.example.demo.Implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

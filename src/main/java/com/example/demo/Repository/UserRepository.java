@@ -1,7 +1,5 @@
 package com.example.demo.Repository;
 
-import com.example.demo.DTO.UserDto;
-
 import com.example.demo.DTO.UserOrderDTO;
 import com.example.demo.Model.UserDetail;
 import org.springframework.data.jpa.repository.JpaRepository;

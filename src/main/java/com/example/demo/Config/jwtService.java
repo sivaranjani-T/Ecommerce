@@ -18,6 +18,8 @@ import java.util.function.Function;
 
 public class jwtService {
     private static final String secretKey="5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+    private static final long EXPIRATION_TIME = 3600000;
+    private static final long EXPIRATION_TIME_RefreshToken = 7 * 24 * 60 * 60 * 1000;
     public String extractUserName(String token){
         return extractClaim(token,Claims::getSubject);
     }
@@ -26,14 +28,29 @@ public class jwtService {
         return claimsResolver.apply(claims);
     }
    public String generateToken(Map<String, Object>extractClaims, UserDetails userDetails){
-        return Jwts.builder()
+       Date now = new Date();
+       Date expiration = new Date(now.getTime() + EXPIRATION_TIME);
+
+       return Jwts.builder()
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000+60*24))
+                .setIssuedAt(now)
+                .setExpiration(expiration)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
    }
+    public String generateRefreshToken(Map<String, Object>extractClaims, UserDetails userDetails){
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + EXPIRATION_TIME_RefreshToken);
+
+        return Jwts.builder()
+                .setClaims(extractClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
    public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>(),userDetails);
    }
