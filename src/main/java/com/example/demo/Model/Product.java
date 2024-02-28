@@ -14,6 +14,7 @@ import java.util.Date;
 
 @Entity
 @Data
+@RequiredArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Product {
     @Id

@@ -45,7 +45,7 @@ public class ProductImplementation implements ProductService {
                 return "Product not saved.";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
             return "Failed to save product: " + e.getMessage();
         }
 
@@ -53,9 +53,9 @@ public class ProductImplementation implements ProductService {
 
     @Override
     public List<Product> searchProductsByKeyword(String keyword) {
-        System.out.println(keyword);
+      //  System.out.println(keyword);
       return  productRepository.findByProductName(keyword);
     }
-
+  // public String deleteProduct(S)
 
 }

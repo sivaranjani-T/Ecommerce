@@ -61,6 +61,7 @@ public class UserImplementation implements UserService {
         newaddress.setState(userDto.getState());
         newaddress.setPinCode(userDto.getPinCode());
         addressRepository.save(newaddress);
+
         var userDetails = UserDetail.builder()
                 .userName(userDto.getUserName())
                 .userEmail(userDto.getUserEmail())
@@ -69,8 +70,8 @@ public class UserImplementation implements UserService {
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .address(newaddress)
                 .build();
-        userRepository.save(userDetails);
-        var jwt = JwtService.generateToken(userDetails);
+
+       // var jwt = JwtService.generateToken(userDetails);
 
         ConfirmationToken confirmationToken = new ConfirmationToken(userDetails);
         confirmationTokenRepository.save(confirmationToken);
@@ -80,10 +81,22 @@ public class UserImplementation implements UserService {
         mailMessage.setText("To confirm your account, please click here : "
                 + "http://localhost:8080/api/confirm-account?token=" + confirmationToken.getConfirmationToken());
         emailService.sendEmail(mailMessage);
-        return ResponseEntity.ok(jwt);
+        userRepository.save(userDetails);
+        return ResponseEntity.ok("jwt");
 
     }
+    @Override
+    public ResponseEntity<?> confirmEmail(String confirmationToken) {
+        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
 
+        if (token != null) {
+            System.out.println("email verifcation ");
+            userRepository.save(token.getUser());
+            return ResponseEntity.ok("Email verified successfully!");
+
+        }
+        return ResponseEntity.badRequest().body("Error: Couldn't verify email");
+    }
     @Override
     public LoginResponse authenticate(login request) {
 
@@ -115,19 +128,7 @@ public class UserImplementation implements UserService {
         return null;
     }
 
-    @Override
-    public ResponseEntity<?> confirmEmail(String confirmationToken) {
-        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
 
-        if (token != null) {
-            // UserDetail user = userRepository.findByUserEmailIgnoreCase(token.getUserEntity().getUserEmail());
-            // user.setEnabled(true);
-            // userRepository.save(user);
-            System.out.println("email verifcation ");
-            return ResponseEntity.ok("Email verified successfully!");
-        }
-        return ResponseEntity.badRequest().body("Error: Couldn't verify email");
-    }
 
 
     @Override
@@ -143,7 +144,7 @@ public class UserImplementation implements UserService {
             userRepository.save(user);
             return ResponseEntity.ok("Verification code sent to your email.");
         } catch (Exception e) {
-            e.printStackTrace();
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing forgot password request.");
         }
     }
@@ -165,7 +166,7 @@ public class UserImplementation implements UserService {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid verification code.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error resetting password.");
         }
     }
@@ -191,7 +192,7 @@ public class UserImplementation implements UserService {
             emailService.sendEmail(mailMessage);
             System.out.println("Reset password email sent successfully.");
         } catch (Exception e) {
-            e.printStackTrace();
+
             System.err.println("Error sending reset password email.");
         }
     }

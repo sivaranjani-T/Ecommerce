@@ -3,15 +3,18 @@ package com.example.demo.Implementation;
 import com.example.demo.Model.Category;
 import com.example.demo.Repository.CategoryRepository;
 import com.example.demo.Service.CategoryService;
+
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CategoryImplementation implements CategoryService {
-    @Autowired
-    private CategoryRepository categoryRepository;;
+@Autowired
+    private  CategoryRepository categoryRepository;
     @Override
     public Object addCategory(Category category) {
         if (category == null || category.getCategoryName() == null || category.getCategoryName().isEmpty()) {

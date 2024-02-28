@@ -26,14 +26,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
+                          auth.anyRequest().permitAll();
+//                            auth.requestMatchers("api/login", "api/display", "api/subCategory/", "api/mainCategory", "api/refreshToken"
+//                            ,"api/forgetPassword","api/resetPassword").permitAll();
+//                            auth.requestMatchers("api/save/product", "api/addCategory",
+//                                    "api/subCategory/**", "http://localhost:8080/api/addCategory").hasAnyAuthority(Role.ADMIN.name());
+//                            auth.requestMatchers("api/save", "api/confirm-account").hasAnyAuthority(Role.USER.name());
 
-                            auth.requestMatchers("api/login", "api/display", "api/subCategory/", "api/mainCategory", "api/refreshToken"
-                            ,"api/forgetPassword","api/resetPassword").permitAll();
-                            auth.requestMatchers("api/save/product", "api/addCategory",
-                                    "api/subCategory/**", "http://localhost:8080/api/addCategory").hasAnyAuthority(Role.ADMIN.name());
-                            auth.requestMatchers("api/save", "api/confirm-account").hasAnyAuthority(Role.USER.name());
-
-                            auth.anyRequest().authenticated();
+                           // auth.anyRequest().authenticated();
 
                         }
                 )

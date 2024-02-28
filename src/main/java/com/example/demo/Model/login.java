@@ -17,6 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
+
 @EntityListeners(AuditingEntityListener.class)
 public class login {
 

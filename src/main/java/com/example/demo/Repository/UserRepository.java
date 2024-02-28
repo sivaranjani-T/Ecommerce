@@ -4,9 +4,10 @@ import com.example.demo.DTO.UserOrderDTO;
 import com.example.demo.Model.UserDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
+@Repository
 public interface UserRepository extends JpaRepository<UserDetail, Integer> {
     Optional<UserDetail>findByUserEmail(String email);
     UserDetail findByUserEmailIgnoreCase(String emailId);

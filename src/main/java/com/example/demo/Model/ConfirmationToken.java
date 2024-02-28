@@ -4,6 +4,7 @@ package com.example.demo.Model;
 import jakarta.persistence.*;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,10 +17,11 @@ import java.util.UUID;
 
 @Entity
 @Data
+@RequiredArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class ConfirmationToken {
 
-  public ConfirmationToken(){}
+
     public ConfirmationToken(UserDetail userDetail) {
 
         createdDate = calculateExpiryDate(60*24);
