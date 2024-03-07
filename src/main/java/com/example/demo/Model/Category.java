@@ -27,7 +27,6 @@ public class Category {
     private String  categoryName;
 
     private  String slug;
-
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "parent_id")

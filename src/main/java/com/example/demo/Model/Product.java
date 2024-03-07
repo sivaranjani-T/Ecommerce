@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -21,15 +22,21 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Integer id;
     private String product_name;
-    private  String short_des;
-    private  String long_des;
+    private  String description;
+
     private  Integer price;
+    private String brand;
+    private String thumbnail;
+
+    private boolean isDeleted;
+
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "inventoryId", referencedColumnName = "inventoryId")
     private Inventory inventory;
 
-    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL)
-    private OrderItems orderItems;
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private List<OrderItems> orderItems;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonBackReference

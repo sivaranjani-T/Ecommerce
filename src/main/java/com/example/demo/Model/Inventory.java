@@ -22,6 +22,7 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Integer inventoryId;
     private Integer quantity;
+    //location
     private  String location;
     @OneToOne(mappedBy = "inventory")
     private Product product;

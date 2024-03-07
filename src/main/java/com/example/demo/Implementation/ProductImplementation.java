@@ -3,59 +3,133 @@ package com.example.demo.Implementation;
 import com.example.demo.DTO.ProductDTO;
 import com.example.demo.Model.Inventory;
 import com.example.demo.Model.Product;
+import com.example.demo.Model.Specifications;
 import com.example.demo.Repository.CategoryRepository;
 import com.example.demo.Repository.InventoryRepository;
 import com.example.demo.Repository.ProductRepository;
+import com.example.demo.Repository.SpecificationsRepository;
 import com.example.demo.Service.ProductService;
 import jakarta.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ProductImplementation implements ProductService {
-    @Autowired
-    private  ProductRepository productRepository;
-  @Autowired
-   private CategoryRepository categoryRepository;
-  @Autowired
-   private InventoryRepository inventoryRepository;
+
+    private  final  ProductRepository productRepository;
+
+    private  final CategoryRepository categoryRepository;
+
+    private final InventoryRepository inventoryRepository;
+
+    private final SpecificationsRepository specificationsRepository;
+
     @Override
     public String productSave(ProductDTO product) {
         try {
-            Product newProduct=new Product();
+            Product newProduct = new Product();
             newProduct.setProduct_name(product.getProduct_name());
-            newProduct.setShort_des(product.getShort_des());
-            newProduct.setLong_des(product.getLong_des());
+            newProduct.setDescription(product.getDescription());
+            newProduct.setBrand(product.getBrand());
+            newProduct.setThumbnail(product.getThumbnail());
             newProduct.setPrice(product.getPrice());
             newProduct.setCategory(categoryRepository.findByCategoryName(product.getCategoryName())
-                    .orElseThrow(()-> new IllegalArgumentException("Category not found")));
-            Inventory inventory=new Inventory();
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found")));
+            Inventory inventory = new Inventory();
             inventory.setQuantity(product.getQuantity());
             inventory.setLocation(product.getLocation());
             inventoryRepository.save(inventory);
             newProduct.setInventory(inventory);
-            Product savedProduct=productRepository.save(newProduct);
+            Product savedProduct = productRepository.save(newProduct);
+            Specifications specifications = new Specifications();
+            System.out.println("id" + newProduct.getId());
+            specifications.setProductId(newProduct.getId());
+            specifications.setWeight(product.getWeight());
+            specifications.setColor(product.getColor());
+            specifications.setModelNo(product.getModelNo());
+            specifications.setModelName(product.getModelName());
+            specifications.setImages(product.getImages());
+            specifications.setSpecifications(product.getSpecifications());
+            specificationsRepository.save(specifications);
+
             if (savedProduct != null) {
-                return "Product saved successfully : ";
+                return "Product saved successfully ";
             } else {
-                return "Product not saved.";
+                return "Product not saved";
             }
         } catch (Exception e) {
 
-            return "Failed to save product: " + e.getMessage();
+            return "Failed to save product " + e.getMessage();
         }
 
     }
 
     @Override
     public List<Product> searchProductsByKeyword(String keyword) {
-      //  System.out.println(keyword);
-      return  productRepository.findByProductName(keyword);
+        return productRepository.findByProductName(keyword);
     }
-  // public String deleteProduct(S)
 
+    @Override
+    public String addSpecification(Specifications specifications) {
+        specificationsRepository.save(specifications);
+        return "Success";
+    }
+
+    @Override
+    public List<ProductDTO> displayProduct() {
+        List<Product> products = productRepository.findAll();
+        List<ProductDTO> productList = new ArrayList<>();
+
+        for (Product product : products) {
+            if (product.getId() > 10) {
+                Specifications specificationsOptional = specificationsRepository.findByProductId(product.getId()).orElseThrow(() -> new RuntimeException("Product does not found"));
+                ProductDTO productDTO = new ProductDTO();
+                productDTO.setProduct_name(product.getProduct_name());
+                productDTO.setCategoryName(product.getCategory().getCategoryName());
+                productDTO.setDescription(product.getDescription());
+                productDTO.setPrice(product.getPrice());
+                productDTO.setBrand(product.getBrand());
+                productDTO.setThumbnail(product.getThumbnail());
+                productDTO.setQuantity(product.getInventory().getQuantity());
+                productDTO.setLocation(product.getInventory().getLocation());
+                productDTO.setModelNo(specificationsOptional.getModelNo());
+                productDTO.setColor(specificationsOptional.getColor());
+                productDTO.setWeight(specificationsOptional.getWeight());
+                productDTO.setSpecifications(specificationsOptional.getSpecifications());
+                productDTO.setImages(specificationsOptional.getImages());
+                productDTO.setModelName(specificationsOptional.getModelName());
+                productList.add(productDTO);
+            }
+        }
+        return productList;
+    }
+
+    @Override
+    public ProductDTO displayProductBydId(Integer id) {
+        Product product=productRepository.findById(id).orElseThrow(()->new RuntimeException("Product does not exist"));
+        Specifications specificationsOptional = specificationsRepository.findByProductId(product.getId()).orElseThrow(() -> new RuntimeException("Product does not found"));
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProduct_name(product.getProduct_name());
+        productDTO.setCategoryName(product.getCategory().getCategoryName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setQuantity(product.getInventory().getQuantity());
+        productDTO.setLocation(product.getInventory().getLocation());
+        productDTO.setModelNo(specificationsOptional.getModelNo());
+        productDTO.setColor(specificationsOptional.getColor());
+        productDTO.setWeight(specificationsOptional.getWeight());
+        productDTO.setSpecifications(specificationsOptional.getSpecifications());
+        productDTO.setImages(specificationsOptional.getImages());
+        productDTO.setModelName(specificationsOptional.getModelName());
+        return productDTO;
+
+
+    }
 }

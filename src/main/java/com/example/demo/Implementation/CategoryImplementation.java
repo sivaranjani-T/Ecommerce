@@ -6,6 +6,8 @@ import com.example.demo.Service.CategoryService;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class CategoryImplementation implements CategoryService {
     private  CategoryRepository categoryRepository;
     @Override
     public Object addCategory(Category category) {
+
         if (category == null || category.getCategoryName() == null || category.getCategoryName().isEmpty()) {
             return "Category is required.";
         }
@@ -41,6 +44,9 @@ public class CategoryImplementation implements CategoryService {
 
     @Override
     public List<String> displayMainCategory() {
+        System.out.println("category");
+        String email= SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(email);
        return categoryRepository.findParentCategory();
     }
 

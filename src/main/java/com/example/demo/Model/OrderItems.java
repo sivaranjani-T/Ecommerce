@@ -20,10 +20,9 @@ public class OrderItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Integer orderItemId;
     private  Integer quantity;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "productId", referencedColumnName = "id")
     private Product product;
-
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Date createdAt;

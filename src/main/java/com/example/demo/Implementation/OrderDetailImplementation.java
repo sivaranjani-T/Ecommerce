@@ -75,7 +75,6 @@ public class OrderDetailImplementation implements OrderDetailService {
                 e.printStackTrace();
                 return "unable to make payment";
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             return "Order failed to add to cart  " + e.getMessage();
