@@ -49,7 +49,7 @@ public class ProductImplementation implements ProductService {
             newProduct.setInventory(inventory);
             Product savedProduct = productRepository.save(newProduct);
             Specifications specifications = new Specifications();
-            System.out.println("id" + newProduct.getId());
+          // System.out.println("id" + newProduct.getId());
             specifications.setProductId(newProduct.getId());
             specifications.setWeight(product.getWeight());
             specifications.setColor(product.getColor());
@@ -130,6 +130,44 @@ public class ProductImplementation implements ProductService {
         productDTO.setModelName(specificationsOptional.getModelName());
         return productDTO;
 
+
+    }
+
+    @Override
+    public String editProduct(Integer id, ProductDTO product) {
+        try {
+            Product oldproduct = productRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+
+            Specifications specifications = specificationsRepository.findByProductId(id)
+                    .orElseThrow(() -> new RuntimeException("Specifications not found for product with id: " + id));
+            oldproduct.setId(oldproduct.getId());
+            oldproduct.setThumbnail(product.getThumbnail());
+            oldproduct.setProduct_name(product.getProduct_name());
+            oldproduct.setDescription(product.getDescription());
+            oldproduct.setPrice(product.getPrice());
+            oldproduct.setBrand(product.getBrand());
+            oldproduct.setCategory(categoryRepository.findByCategoryName(product.getCategoryName())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found")));
+            Inventory inventory = inventoryRepository.findByInventoryId(oldproduct.getInventory().getInventoryId());
+            inventory.setInventoryId(inventory.getInventoryId());
+            inventory.setQuantity(product.getQuantity());
+            inventory.setLocation(product.getLocation());
+            inventoryRepository.save(inventory);
+            productRepository.save(oldproduct);
+            specifications.setProductId(specifications.getProductId());
+            specifications.setWeight(product.getWeight());
+            specifications.setColor(product.getColor());
+            specifications.setModelNo(product.getModelNo());
+            specifications.setModelName(product.getModelName());
+            specifications.setImages(product.getImages());
+            specifications.setSpecifications(product.getSpecifications());
+            specificationsRepository.save(specifications);
+            return "Product Updated ";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "Failed to update product";
+        }
 
     }
 }

@@ -36,11 +36,11 @@ public class productController {
     }
 
 
-    @PostMapping("add/specification")
-    public String addSpecification(@RequestBody Specifications specifications){
-
-        return  productService.addSpecification(specifications);
-    }
+//    @PostMapping("add/specification")
+//    public String addSpecification(@RequestBody Specifications specifications){
+//
+//        return  productService.addSpecification(specifications);
+//    }
 
     @GetMapping("display/products")
     public ResponseEntity<Object> viewProduct(){
@@ -64,4 +64,14 @@ public class productController {
          }
 
      }
-}
+
+     @PutMapping("edit/product/{id}")
+    public ResponseEntity<Object>editProduct(@PathVariable Integer id,@RequestBody ProductDTO product){
+         try {
+             String result= productService.editProduct(id,product);
+             return new ResponseEntity<>(result, HttpStatus.OK);
+         } catch (Exception e) {
+             return new ResponseEntity<>("Failed to edit product" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+     }
+     }
