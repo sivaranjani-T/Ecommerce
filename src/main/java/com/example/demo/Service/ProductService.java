@@ -19,4 +19,6 @@ public interface ProductService {
    List<ProductDTO> displayProduct();
 
     ProductDTO displayProductBydId(Integer id);
+
+    String editProduct(Integer id, ProductDTO product);
 }
