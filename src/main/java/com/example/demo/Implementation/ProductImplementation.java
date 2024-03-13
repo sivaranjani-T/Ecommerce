@@ -49,7 +49,7 @@ public class ProductImplementation implements ProductService {
             newProduct.setInventory(inventory);
             Product savedProduct = productRepository.save(newProduct);
             Specifications specifications = new Specifications();
-          // System.out.println("id" + newProduct.getId());
+
             specifications.setProductId(newProduct.getId());
             specifications.setWeight(product.getWeight());
             specifications.setColor(product.getColor());
@@ -155,6 +155,7 @@ public class ProductImplementation implements ProductService {
             inventory.setLocation(product.getLocation());
             inventoryRepository.save(inventory);
             productRepository.save(oldproduct);
+            specifications.setId(specifications.getId());
             specifications.setProductId(specifications.getProductId());
             specifications.setWeight(product.getWeight());
             specifications.setColor(product.getColor());
