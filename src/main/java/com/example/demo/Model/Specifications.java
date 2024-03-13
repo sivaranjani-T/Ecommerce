@@ -1,5 +1,7 @@
 package com.example.demo.Model;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 import org.springframework.data.mongodb.core.CollectionCallback;
@@ -12,12 +14,13 @@ import java.util.Map;
 @Data
 public class Specifications {
      @Id
-    private Integer productId;
-    private  String modelNo;
-    private String modelName;
-    private String color;
-    private Integer weight;
-   private Map<String ,String> specifications;
-   private Map<String ,String> images;
+     private String id;
+     private Integer productId;
+     private  String modelNo;
+     private String modelName;
+     private String color;
+     private Integer weight;
+     private Map<String ,String> specifications;
+     private Map<String ,String> images;
 
 }
